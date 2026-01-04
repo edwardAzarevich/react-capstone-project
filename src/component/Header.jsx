@@ -1,9 +1,9 @@
-import img from '../../public/Vector.svg';
+import img from '../assets/Vector.svg';
 
 const Header = () => {
     return <header>
         Header
-        {img}
+        <img src={img} alt="Vector icon" />
     </header>
 }
 

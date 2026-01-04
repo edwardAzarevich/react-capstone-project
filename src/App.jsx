@@ -1,19 +1,24 @@
 import './App.css';
+import Footer from './component/Footer';
+import Main from './component/Main';
+import Header from './component/Header';
+
 
 function App() {
-  return (
-    <>
-      <header>
-      </header>
-      <main>
-        123
-      </main>
+    return (
+        <>
+            <header>
+                <Header />
+            </header>
+            <main>
+                <Main />
+            </main>
 
-      <footer>
-        123
-      </footer>
-    </>
-  );
+            <footer>
+                <Footer />
+            </footer>
+        </>
+    );
 }
 
 export default App;
