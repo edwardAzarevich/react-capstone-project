@@ -5,20 +5,20 @@ import Header from './component/Header';
 
 
 function App() {
-    return (
-        <>
-            <header>
-                <Header />
-            </header>
-            <main>
-                <Main />
-            </main>
+  return (
+    <div className='root'>
+      <header>
+        <Header />
+      </header>
+      <main>
+        <Main />
+      </main>
 
-            <footer>
-                <Footer />
-            </footer>
-        </>
-    );
+      <footer>
+        <Footer />
+      </footer>
+    </div>
+  );
 }
 
 export default App;

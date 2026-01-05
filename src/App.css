@@ -24,6 +24,22 @@
   color: white;
 }
 
+.Header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  gap: 20px;
+}
+
+.Nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -32,7 +48,15 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.root {
+  display: grid;
+  grid-auto-flow: row;
+  justify-items: center;
+  align-items: center;
 }
