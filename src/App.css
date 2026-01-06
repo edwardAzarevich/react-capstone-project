@@ -1,16 +1,5 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  font-family: 'Karla', sans-serif;
 }
 
 .App-header {
@@ -42,6 +31,11 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.info {
+  background-color: #495E57;
+  width: 200px;
 }
 
 @keyframes App-logo-spin {
