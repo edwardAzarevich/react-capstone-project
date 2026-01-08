@@ -5,14 +5,16 @@ const Header = () => {
     return (
         <header className='Header'>
             <img src={img} alt="Vector icon" />
-            <div className='Nav'>
-                <p>Home</p>
-                <p>About</p>
-                <p>Menu</p>
-                <p>Reservations</p>
-                <p>Order Online</p>
-                <p>Login</p>
-            </div>
+            <nav className="Nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/menu">Menu</a></li>
+                    <li><a href="/reservations">Reservations</a></li>
+                    <li><a href="/order">Order Online</a></li>
+                    <li><a href="/login">Login</a></li>
+                </ul>
+            </nav>
         </header>)
 }
 

@@ -14,6 +14,7 @@ function App() {
       </main>
       <div>
         This week's specials!
+        <div className='buttonMain'>123</div>
       </div>
       <div className='info'>
         Our customers love us
