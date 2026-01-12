@@ -20,7 +20,7 @@ body {
   justify-content: center;
   align-items: center;
   justify-items: center;
-  gap: 120px;
+  gap: 220px;
   margin: 15px 0px 50px 0px;
 }
 
@@ -28,7 +28,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 30px;
 }
 
 .Nav ul {
