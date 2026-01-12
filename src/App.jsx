@@ -1,5 +1,5 @@
 import './App.css';
-import Footer from './component/Footer';
+import Footer from './component/footer/Footer';
 import Header from './component/Header';
 import CallToActionMain from './component/callToAction/CallToActionMain';
 import Special from './component/special/Special';
