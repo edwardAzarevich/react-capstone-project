@@ -1,6 +1,5 @@
 import CallToActionCard from './CallToActionCard';
-import pic from '../../assets/Hero_Pic.svg';
-
+import pic from '../../assets/Pic.svg';
 
 const CallToActionMain = () => {
     return (

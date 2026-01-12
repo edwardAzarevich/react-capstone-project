@@ -1,6 +1,3 @@
-import React from 'react';
-import ButtonReserve from './ButtonReserve';
-
 const CallToActionCard = () => {
     return (
         <div className='CallToActionCard'>
@@ -11,7 +8,7 @@ const CallToActionCard = () => {
                 restaurant, focused on traditional recipes<br />
                 served with a modern twist.</p>
             <div style={{ width: '200px', marginTop: '50px', marginBottom: '10px' }}>
-                <ButtonReserve />
+                <button className="special-button">Reserve a Table</button>
             </div>
         </div>
     );

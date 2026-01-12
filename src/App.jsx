@@ -3,6 +3,7 @@ import Footer from './component/Footer';
 import Main from './component/Main';
 import Header from './component/Header';
 import CallToActionMain from './component/callToAction/CallToActionMain';
+import Special from './component/special/Special';
 
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
             </header>
             <div className='info'>
                 <CallToActionMain />
+            </div>
+            <div>
+                <Special />
             </div>
             <main>
                 <Main />
