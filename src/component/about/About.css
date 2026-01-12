@@ -1,0 +1,112 @@
+.about-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 3rem;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.images-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.team-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Контейнер для текста */
+.hero-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 1.5rem;
+}
+
+/* Заголовок */
+.hero-title {
+    font-size: 3rem;
+    font-family: 'Markazi Text', sans-serif;
+    font-weight: 700;
+    color: #495e57;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 0;
+}
+
+/* Подзаголовок */
+.hero-subtitle {
+    font-size: 1.8rem;
+    font-family: 'Markazi Text', sans-serif;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Описание */
+.hero-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0 1rem;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (min-width: 768px) {
+    .about-container {
+        flex-direction: row;
+        gap: 4rem;
+        padding: 3rem;
+    }
+    
+    .hero-text-container {
+        text-align: left;
+        align-items: flex-start;
+    }
+    
+    .hero-description {
+        padding: 0;
+    }
+    
+    .images-container {
+        max-width: 500px;
+    }
+    
+    .hero-text-container {
+        max-width: 500px;
+    }
+}
+
+/* Для очень больших экранов */
+@media (min-width: 1200px) {
+    .about-container {
+        gap: 5rem;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 2rem;
+    }
+    
+    .hero-description {
+        font-size: 1.2rem;
+    }
+}

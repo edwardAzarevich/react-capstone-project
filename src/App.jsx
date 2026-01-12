@@ -4,6 +4,7 @@ import Header from './component/Header';
 import CallToActionMain from './component/callToAction/CallToActionMain';
 import Special from './component/special/Special';
 import Testimonials from './component/customersSay/Testimonials';
+import About from './component/about/About';
 
 
 function App() {
@@ -19,9 +20,7 @@ function App() {
                 <Special />
             </div>
             {<Testimonials />}
-            <div>
-                <p>Little Lemon</p>
-            </div>
+            <About />
 
             <footer className='info-background'>
                 <Footer />
