@@ -52,7 +52,7 @@ body {
   color: #61dafb;
 }
 
-.info {
+.info-background {
     display: flex;
     justify-content: center;
     background-color: #495E57;

@@ -1,9 +1,9 @@
 import './App.css';
 import Footer from './component/Footer';
-import Main from './component/Main';
 import Header from './component/Header';
 import CallToActionMain from './component/callToAction/CallToActionMain';
 import Special from './component/special/Special';
+import Testimonials from './component/customersSay/Testimonials';
 
 
 function App() {
@@ -12,23 +12,18 @@ function App() {
             <header>
                 <Header />
             </header>
-            <div className='info'>
+            <div className='info-background'>
                 <CallToActionMain />
             </div>
             <div>
                 <Special />
             </div>
-            <main>
-                <Main />
-            </main>
-            <div className='info'>
-                Our customers love us
-            </div>
+            {<Testimonials />}
             <div>
                 <p>Little Lemon</p>
             </div>
 
-            <footer className='info'>
+            <footer className='info-background'>
                 <Footer />
             </footer>
         </div>
