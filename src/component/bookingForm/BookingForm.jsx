@@ -19,6 +19,7 @@ const BookingForm = () => {
     return (
         <>
             <div>
+                <header>Book Now</header>
                 <Formik initialValues={initialValues} onSubmit={onSubmit}>
                     {({ isSubmitting, values, setFieldValue }) => (
                         <Form style={{ display: "grid", maxWidth: "200px", gap: "20px" }}>
