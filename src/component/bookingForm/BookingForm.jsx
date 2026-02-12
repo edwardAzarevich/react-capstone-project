@@ -2,6 +2,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import "./bookingForm.css";
 import { useState } from 'react';
 import { fetchAPI, submitAPI } from '../../api/api';
+import ConfirmedBooking from './ConfirmedBooking';
 
 const BookingForm = () => {
     const initialValues = {
@@ -12,6 +13,8 @@ const BookingForm = () => {
     };
 
     const [availableTimes, setAvailableTimes] = useState([]);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [bookingData, setBookingData] = useState(null);
 
     const updateAvailableTimes = (dateString) => {
         if (dateString && fetchAPI) {
@@ -23,19 +26,22 @@ const BookingForm = () => {
         }
     };
 
-    const onSubmit = (values, { setSubmitting }) => {
+    const onSubmit = (values, { setSubmitting, resetForm }) => {
         console.log("send:", values);
 
         if (submitAPI) {
             const success = submitAPI(values);
-            console.log("API answer:", success);
+            if (success) {
+                setBookingData(values);
+                setIsSubmitted(true);
+                setAvailableTimes([]);
+            }
         }
-
-        setTimeout(() => {
-            setSubmitting(false);
-            alert("booking successed!");
-        }, 1000);
     };
+
+    if (isSubmitted) {
+        return <ConfirmedBooking bookingDetails={bookingData} />;
+    }
 
     return (
         <div className="booking-container">
