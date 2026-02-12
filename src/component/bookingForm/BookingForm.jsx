@@ -64,7 +64,6 @@ const BookingForm = () => {
     const validateForm = (values) => {
         const errors = {};
 
-        // date
         if (!values.resDate) {
             errors.resDate = 'Please select a date';
         } else {
@@ -77,14 +76,12 @@ const BookingForm = () => {
             }
         }
 
-        // time
         if (!values.resTime) {
             errors.resTime = 'Please select a time.';
         } else if (!isSlotAvailable(values.resDate, values.resTime)) {
             errors.resTime = 'This time has already been booked. Please choose a different time';
         }
 
-        // guests
         if (!values.guests) {
             errors.guests = 'Please specify the number of guests';
         } else if (values.guests < 1) {
@@ -93,7 +90,6 @@ const BookingForm = () => {
             errors.guests = 'Maximum of 10 guests';
         }
 
-        // occasion
         if (!values.occasion) {
             errors.occasion = 'Please choose a reason';
         }
@@ -116,7 +112,6 @@ const BookingForm = () => {
             const success = submitAPI(values);
             if (success) {
                 saveBooking(values);
-
                 setBookingData(values);
                 setIsSubmitted(true);
                 setAvailableTimes([]);
