@@ -1,6 +1,6 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import "./bookingForm.css";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchAPI, submitAPI } from '../../api/api';
 import ConfirmedBooking from './ConfirmedBooking';
 
@@ -15,28 +15,115 @@ const BookingForm = () => {
     const [availableTimes, setAvailableTimes] = useState([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [bookingData, setBookingData] = useState(null);
+    const [bookedSlots, setBookedSlots] = useState({});
 
     const updateAvailableTimes = (dateString) => {
         if (dateString && fetchAPI) {
             const date = new Date(dateString);
             const times = fetchAPI(date);
-            setAvailableTimes(times);
+
+            const availableTimesFiltered = times.filter(time => {
+                const slotKey = `${dateString}-${time}`;
+                return !bookedSlots[slotKey];
+            });
+
+            setAvailableTimes(availableTimesFiltered);
         } else {
             setAvailableTimes([]);
         }
     };
 
-    const onSubmit = (values, { setSubmitting, resetForm }) => {
+    useEffect(() => {
+        const storedBookings = localStorage.getItem('bookedSlots');
+        if (storedBookings) {
+            setBookedSlots(JSON.parse(storedBookings));
+        }
+    }, []);
+
+    const isSlotAvailable = (date, time) => {
+        if (!date || !time) return false;
+        const slotKey = `${date}-${time}`;
+        return !bookedSlots[slotKey];
+    };
+
+    const saveBooking = (booking) => {
+        const slotKey = `${booking.resDate}-${booking.resTime}`;
+        const updatedBookings = {
+            ...bookedSlots,
+            [slotKey]: {
+                ...booking,
+                bookingId: Date.now(),
+                bookedAt: new Date().toISOString()
+            }
+        };
+
+        setBookedSlots(updatedBookings);
+        localStorage.setItem('bookedSlots', JSON.stringify(updatedBookings));
+    };
+
+    const validateForm = (values) => {
+        const errors = {};
+
+        // date
+        if (!values.resDate) {
+            errors.resDate = 'Please select a date';
+        } else {
+            const selectedDate = new Date(values.resDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                errors.resDate = 'The date cannot be in the past';
+            }
+        }
+
+        // time
+        if (!values.resTime) {
+            errors.resTime = 'Please select a time.';
+        } else if (!isSlotAvailable(values.resDate, values.resTime)) {
+            errors.resTime = 'This time has already been booked. Please choose a different time';
+        }
+
+        // guests
+        if (!values.guests) {
+            errors.guests = 'Please specify the number of guests';
+        } else if (values.guests < 1) {
+            errors.guests = 'Minimum of 1 guest';
+        } else if (values.guests > 10) {
+            errors.guests = 'Maximum of 10 guests';
+        }
+
+        // occasion
+        if (!values.occasion) {
+            errors.occasion = 'Please choose a reason';
+        }
+
+        return errors;
+    };
+
+    const onSubmit = (values, { setSubmitting, setFieldError }) => {
+        if (!isSlotAvailable(values.resDate, values.resTime)) {
+            setFieldError('resTime', 'This time has already been booked. Please choose a different time');
+            setSubmitting(false);
+
+            updateAvailableTimes(values.resDate);
+            return;
+        }
+
         console.log("send:", values);
 
         if (submitAPI) {
             const success = submitAPI(values);
             if (success) {
+                saveBooking(values);
+
                 setBookingData(values);
                 setIsSubmitted(true);
                 setAvailableTimes([]);
             }
         }
+
+        setSubmitting(false);
     };
 
     if (isSubmitted) {
@@ -48,8 +135,13 @@ const BookingForm = () => {
             <div className="booking-card">
                 <header className="booking-header">Book Now</header>
 
-                <Formik initialValues={initialValues} onSubmit={onSubmit}>
-                    {({ isSubmitting, values, setFieldValue }) => (
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    validate={validateForm}
+                    validateOnChange={true}
+                    validateOnBlur={true}>
+                    {({ isSubmitting, values, setFieldValue, isValid, dirty }) => (
                         <Form className="booking-form">
                             <label htmlFor="res-date" className="form-label">
                                 Choose date
@@ -119,7 +211,7 @@ const BookingForm = () => {
 
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || !isValid || !dirty || availableTimes.length === 0}
                                 className="submit-button"
                             >
                                 {isSubmitting ? "sending..." : "Make Your reservation"}
