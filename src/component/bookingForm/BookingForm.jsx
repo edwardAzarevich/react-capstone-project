@@ -1,5 +1,7 @@
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import "./bookingForm.css";
+import { useState } from 'react';
+import { fetchAPI, submitAPI } from '../../api/api';
 
 const BookingForm = () => {
     const initialValues = {
@@ -9,11 +11,29 @@ const BookingForm = () => {
         occasion: "",
     };
 
+    const [availableTimes, setAvailableTimes] = useState([]);
+
+    const updateAvailableTimes = (dateString) => {
+        if (dateString && fetchAPI) {
+            const date = new Date(dateString);
+            const times = fetchAPI(date);
+            setAvailableTimes(times);
+        } else {
+            setAvailableTimes([]);
+        }
+    };
+
     const onSubmit = (values, { setSubmitting }) => {
         console.log("send:", values);
+
+        if (submitAPI) {
+            const success = submitAPI(values);
+            console.log("API answer:", success);
+        }
+
         setTimeout(() => {
             setSubmitting(false);
-            alert("booking");
+            alert("booking successed!");
         }, 1000);
     };
 
@@ -23,7 +43,7 @@ const BookingForm = () => {
                 <header className="booking-header">Book Now</header>
 
                 <Formik initialValues={initialValues} onSubmit={onSubmit}>
-                    {({ isSubmitting, values }) => (
+                    {({ isSubmitting, values, setFieldValue }) => (
                         <Form className="booking-form">
                             <label htmlFor="res-date" className="form-label">
                                 Choose date
@@ -35,6 +55,11 @@ const BookingForm = () => {
                                 name="resDate"
                                 value={values.resDate}
                                 className="form-input"
+                                onChange={(e) => {
+                                    const dateValue = e.target.value;
+                                    setFieldValue('resDate', dateValue);
+                                    updateAvailableTimes(dateValue);
+                                }}
                             />
                             <ErrorMessage name="resDate" component="div" className="error-message" />
 
@@ -47,13 +72,12 @@ const BookingForm = () => {
                                 name="resTime"
                                 className="form-select"
                             >
-                                <option value="">Choose time</option>
-                                <option>17:00</option>
-                                <option>18:00</option>
-                                <option>19:00</option>
-                                <option>20:00</option>
-                                <option>21:00</option>
-                                <option>22:00</option>
+                                {availableTimes.map((time) => (
+                                    <option key={time} value={time}>
+                                        {time}
+                                    </option>
+                                ))}
+
                             </Field>
                             <ErrorMessage name="resTime" component="div" className="error-message" />
 
