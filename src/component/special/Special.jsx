@@ -34,7 +34,9 @@ const Special = () => {
         <section className="special-section">
             <div className="special-header">
                 <h1 className="special-title">This week's specials!</h1>
-                <button className="special-button">Reserve a Table</button>
+                <a href="/bookingPage" style={{ textDecoration: 'none' }}>
+                    <button className="special-button">Reserve a Table</button>
+                </a>
             </div>
             <div className="special-cards">
                 {specialItems.map(item => (
