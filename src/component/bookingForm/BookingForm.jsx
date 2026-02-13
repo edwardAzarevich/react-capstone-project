@@ -22,6 +22,12 @@ const BookingForm = () => {
             const date = new Date(dateString);
             const times = fetchAPI(date);
 
+            if (!times || !Array.isArray(times)) {
+                console.warn('fetchAPI returned invalid data:', times);
+                setAvailableTimes([]);
+                return;
+            }
+
             const availableTimesFiltered = times.filter(time => {
                 const slotKey = `${dateString}-${time}`;
                 return !bookedSlots[slotKey];
@@ -165,12 +171,12 @@ const BookingForm = () => {
                                 name="resTime"
                                 className="form-select"
                             >
+                                <option value="">Select a time</option>
                                 {availableTimes.map((time) => (
                                     <option key={time} value={time}>
                                         {time}
                                     </option>
                                 ))}
-
                             </Field>
                             <ErrorMessage name="resTime" component="div" className="error-message" />
 
@@ -199,8 +205,8 @@ const BookingForm = () => {
                                 className="form-select"
                             >
                                 <option value="">Choose occasion</option>
-                                <option>Birthday</option>
-                                <option>Anniversary</option>
+                                <option value="Birthday">Birthday</option>
+                                <option value="Anniversary">Anniversary</option>
                             </Field>
                             <ErrorMessage name="occasion" component="div" className="error-message" />
 
