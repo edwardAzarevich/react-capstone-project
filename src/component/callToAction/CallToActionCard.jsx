@@ -8,7 +8,9 @@ const CallToActionCard = () => {
                 restaurant, focused on traditional recipes<br />
                 served with a modern twist.</p>
             <div style={{ width: '200px', marginTop: '50px', marginBottom: '10px' }}>
-                <button className="special-button">Reserve a Table</button>
+                <a href="/bookingPage" style={{ textDecoration: 'none' }}>
+                    <button className="special-button">Reserve a Table</button>
+                </a>
             </div>
         </div>
     );
