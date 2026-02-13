@@ -62,4 +62,24 @@ describe('BookingForm', () => {
             });
         });
     });
+
+    test('validates past dates', async () => {
+        const user = userEvent.setup();
+        render(<BookingForm />);
+
+        const dateInput = screen.getByLabelText(/choose date/i);
+
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayString = yesterday.toISOString().split('T')[0];
+
+        await user.type(dateInput, yesterdayString);
+        await user.tab();
+
+        await waitFor(() => {
+            expect(screen.getByText('The date cannot be in the past')).toBeInTheDocument();
+        });
+    });
+
+
 });
