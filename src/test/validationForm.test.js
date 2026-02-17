@@ -23,7 +23,7 @@ describe('validateBookingForm', () => {
         });
 
         test('should return error if resDate is in the past', () => {
-            const pastDate = getDateString(-1); // вчера
+            const pastDate = getDateString(-1);
             const values = { ...getValidValues(), resDate: pastDate };
             const errors = validateBookingForm(values);
 
@@ -174,7 +174,7 @@ describe('validateBookingForm', () => {
 
         test('should handle partial validation with some fields empty', () => {
             const values = {
-                resDate: getDateString(1), // завтра
+                resDate: getDateString(1),
                 resTime: '',
                 guests: 4,
                 occasion: ''
