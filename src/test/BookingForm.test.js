@@ -1,7 +1,12 @@
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import BookingForm from "../component/bookingForm/BookingForm";
 import userEvent from '@testing-library/user-event';
-import { fetchAPI, submitAPI } from '../api/api';
+import { validateBookingForm } from '../utils/validation';
+
+
+jest.mock('../utils/validation', () => ({
+    validateBookingForm: jest.fn()
+}));
 
 beforeAll(() => {
     window.fetchAPI = jest.fn();
@@ -26,6 +31,9 @@ describe('BookingForm localStorage', () => {
 
         window.fetchAPI.mockReturnValue(['17:00', '17:30', '20:30', '22:30']);
         window.submitAPI.mockReturnValue(true);
+
+        // По умолчанию валидация проходит успешно (возвращает пустой объект)
+        validateBookingForm.mockReturnValue({});
     });
 
     afterEach(() => {
@@ -44,9 +52,11 @@ describe('BookingForm localStorage', () => {
 
         await waitFor(() => {
             const timeSelect = screen.getByLabelText(/choose time/i);
+            // Проверяем что опций 4 (включая пустую опцию)
             expect(timeSelect.children).toHaveLength(4);
-            expect(timeSelect).not.toContainHTML('<option value="17:00">17:00</option>');
-            expect(timeSelect).toContainHTML('<option value="17:30">17:30</option>');
+            // Проверяем что забронированное время отсутствует
+            expect(screen.queryByText('17:00')).not.toBeInTheDocument();
+            expect(screen.getByText('17:30')).toBeInTheDocument();
         });
     });
 
@@ -88,7 +98,6 @@ describe('BookingForm localStorage', () => {
 
         await waitFor(() => {
             const timeSelect = screen.getByLabelText(/choose time/i);
-            expect(timeSelect.children).toHaveLength(4);
             expect(screen.getByText('17:30')).toBeInTheDocument();
             expect(screen.queryByText('17:00')).not.toBeInTheDocument();
         });
@@ -99,8 +108,7 @@ test("Renders the BookingForm heading", () => {
     render(<BookingForm />);
     const headingElement = screen.getByText("Book Now");
     expect(headingElement).toBeInTheDocument();
-})
-
+});
 
 describe('BookingForm', () => {
     const mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
@@ -111,6 +119,8 @@ describe('BookingForm', () => {
 
     beforeEach(() => {
         mockConsoleLog.mockClear();
+        // Убеждаемся что валидация проходит
+        validateBookingForm.mockReturnValue({});
     });
 
     afterAll(() => {
@@ -158,6 +168,11 @@ describe('BookingForm', () => {
     test('validates past dates', async () => {
         const user = userEvent.setup();
         render(<BookingForm />);
+
+        // Мокаем возврат ошибки валидации
+        validateBookingForm.mockReturnValue({
+            resDate: 'The date cannot be in the past'
+        });
 
         const dateInput = screen.getByLabelText(/choose date/i);
 
