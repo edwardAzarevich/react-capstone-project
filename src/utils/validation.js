@@ -15,11 +15,11 @@ export const validateBookingForm = (values, isSlotAvailable) => {
 
     if (!values.resTime) {
         errors.resTime = 'Please select a time.';
-    } else if (isSlotAvailable && !isSlotAvailable(values.resDate, values.resTime)) {
+    } else if (values.resDate && isSlotAvailable && !isSlotAvailable(values.resDate, values.resTime)) {
         errors.resTime = 'This time has already been booked. Please choose a different time';
     }
 
-    if (!values.guests) {
+    if (values.guests === undefined || values.guests === null || values.guests === '') {
         errors.guests = 'Please specify the number of guests';
     } else if (values.guests < 1) {
         errors.guests = 'Minimum of 1 guest';
