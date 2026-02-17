@@ -75,7 +75,7 @@ describe('BookingForm localStorage', () => {
         await user.type(guestsInput, '4');
         await user.selectOptions(occasionSelect, 'Birthday');
 
-        const submitButton = screen.getByRole('button', { name: /make your reservation/i });
+        const submitButton = screen.getByRole('button', { name: /on Click/i });
         await user.click(submitButton);
 
         await waitFor(() => {
@@ -134,7 +134,7 @@ describe('BookingForm', () => {
         expect(screen.getByLabelText(/choose time/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/number of guests/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/occasion/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /make your reservation/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /on Click/i })).toBeInTheDocument();
     });
 
     test('submits form with correct values', async () => {
@@ -145,7 +145,7 @@ describe('BookingForm', () => {
         const timeSelect = screen.getByLabelText(/choose time/i);
         const guestsInput = screen.getByLabelText(/number of guests/i);
         const occasionSelect = screen.getByLabelText(/occasion/i);
-        const submitButton = screen.getByRole('button', { name: /make your reservation/i });
+        const submitButton = screen.getByRole('button', { name: /on Click/i });
 
         await user.type(dateInput, '2026-02-15');
         await user.selectOptions(timeSelect, '17:00');
