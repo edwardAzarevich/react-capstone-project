@@ -8,8 +8,14 @@ export const validateBookingForm = (values, isSlotAvailable) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
+        const sixMonthsFromNow = new Date();
+        sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+        sixMonthsFromNow.setHours(0, 0, 0, 0);
+
         if (selectedDate < today) {
             errors.resDate = 'The date cannot be in the past';
+        } else if (selectedDate > sixMonthsFromNow) {
+            errors.resDate = 'Reservations can only be made up to 6 months in advance';
         }
     }
 
