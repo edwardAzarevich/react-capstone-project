@@ -177,6 +177,7 @@ const BookingForm = () => {
 
                             <button
                                 type="submit"
+                                aria-label="on Click"
                                 disabled={isSubmitting || !isValid || !dirty || availableTimes.length === 0}
                                 className="submit-button"
                             >
