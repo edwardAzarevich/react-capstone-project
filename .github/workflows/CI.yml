@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  log:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,3 +20,12 @@ jobs:
 
       - name: Log node version
         run: node -v
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      # - name: Run test
+      #   run: npm run test
