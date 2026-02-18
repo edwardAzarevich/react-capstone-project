@@ -9,3 +9,14 @@ jobs:
     steps:
       - name: Console.log
         run: echo "Hi"
+
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@4
+        with:
+          node-version: 24.13.1
+
+      - name: Log node version
+        run: node -v
