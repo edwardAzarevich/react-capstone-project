@@ -3,6 +3,7 @@ import "./bookingForm.css";
 import { useState, useEffect } from 'react';
 import { fetchAPI, submitAPI } from '../../api/api';
 import ConfirmedBooking from './ConfirmedBooking';
+import { validateBookingForm } from '../../utils/validation';
 
 const BookingForm = () => {
     const initialValues = {
@@ -67,42 +68,6 @@ const BookingForm = () => {
         localStorage.setItem('bookedSlots', JSON.stringify(updatedBookings));
     };
 
-    const validateForm = (values) => {
-        const errors = {};
-
-        if (!values.resDate) {
-            errors.resDate = 'Please select a date';
-        } else {
-            const selectedDate = new Date(values.resDate);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (selectedDate < today) {
-                errors.resDate = 'The date cannot be in the past';
-            }
-        }
-
-        if (!values.resTime) {
-            errors.resTime = 'Please select a time.';
-        } else if (!isSlotAvailable(values.resDate, values.resTime)) {
-            errors.resTime = 'This time has already been booked. Please choose a different time';
-        }
-
-        if (!values.guests) {
-            errors.guests = 'Please specify the number of guests';
-        } else if (values.guests < 1) {
-            errors.guests = 'Minimum of 1 guest';
-        } else if (values.guests > 10) {
-            errors.guests = 'Maximum of 10 guests';
-        }
-
-        if (!values.occasion) {
-            errors.occasion = 'Please choose a reason';
-        }
-
-        return errors;
-    };
-
     const onSubmit = (values, { setSubmitting, setFieldError }) => {
         if (!isSlotAvailable(values.resDate, values.resTime)) {
             setFieldError('resTime', 'This time has already been booked. Please choose a different time');
@@ -139,7 +104,7 @@ const BookingForm = () => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={onSubmit}
-                    validate={validateForm}
+                    validate={validateBookingForm}
                     validateOnChange={true}
                     validateOnBlur={true}>
                     {({ isSubmitting, values, setFieldValue, isValid, dirty }) => (
@@ -212,6 +177,7 @@ const BookingForm = () => {
 
                             <button
                                 type="submit"
+                                aria-label="on Click"
                                 disabled={isSubmitting || !isValid || !dirty || availableTimes.length === 0}
                                 className="submit-button"
                             >
