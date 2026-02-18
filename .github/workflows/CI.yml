@@ -1,6 +1,6 @@
 name: CI
 
-on: [push]
+on: [pull request]
 
 jobs:
   lint:
@@ -44,5 +44,5 @@ jobs:
       - name: Install deps
         run: npm install
 
-      - name: Run lint
+      - name: Run test
         run: npm run test
