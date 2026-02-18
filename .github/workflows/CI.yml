@@ -7,8 +7,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Console.log
-        run: echo "Hi"
 
       - name: Checkout to repo
         uses: actions/checkout@v4
@@ -27,5 +25,24 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      # - name: Run test
-      #   run: npm run test
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.13.1
+
+      - name: Log node version
+        run: node -v
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run lint
+        run: npm run test
