@@ -1,0 +1,1 @@
+echo "-P ubuntu-latest=catthehacker/ubuntu:act-latest" > .actrc
