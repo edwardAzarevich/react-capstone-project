@@ -32,7 +32,6 @@ describe('BookingForm localStorage', () => {
         window.fetchAPI.mockReturnValue(['17:00', '17:30', '20:30', '22:30']);
         window.submitAPI.mockReturnValue(true);
 
-        // По умолчанию валидация проходит успешно (возвращает пустой объект)
         validateBookingForm.mockReturnValue({});
     });
 
@@ -52,9 +51,9 @@ describe('BookingForm localStorage', () => {
 
         await waitFor(() => {
             const timeSelect = screen.getByLabelText(/choose time/i);
-            // Проверяем что опций 4 (включая пустую опцию)
+
             expect(timeSelect.children).toHaveLength(4);
-            // Проверяем что забронированное время отсутствует
+
             expect(screen.queryByText('17:00')).not.toBeInTheDocument();
             expect(screen.getByText('17:30')).toBeInTheDocument();
         });
@@ -119,7 +118,6 @@ describe('BookingForm', () => {
 
     beforeEach(() => {
         mockConsoleLog.mockClear();
-        // Убеждаемся что валидация проходит
         validateBookingForm.mockReturnValue({});
     });
 
@@ -169,7 +167,6 @@ describe('BookingForm', () => {
         const user = userEvent.setup();
         render(<BookingForm />);
 
-        // Мокаем возврат ошибки валидации
         validateBookingForm.mockReturnValue({
             resDate: 'The date cannot be in the past'
         });
