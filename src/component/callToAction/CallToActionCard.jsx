@@ -9,7 +9,7 @@ const CallToActionCard = () => {
                 served with a modern twist.
             </p>
             <div className="cta-cta-wrap">
-                <a href="/bookingPage" className="cta-link">
+                <a href="/reservations" className="cta-link">
                     <button className="special-button">Reserve a Table</button>
                 </a>
             </div>

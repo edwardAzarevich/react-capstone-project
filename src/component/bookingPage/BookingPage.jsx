@@ -1,10 +1,10 @@
 import BookingForm from '../bookingForm/BookingForm';
-
+import Header from '../Header';
 
 const BookingPage = () => {
     return (
         <>
-            <header></header>
+            <Header></Header>
             <BookingForm />
         </>
     )
