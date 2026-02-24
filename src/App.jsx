@@ -7,6 +7,7 @@ import Testimonials from './component/customersSay/Testimonials';
 import About from './component/about/About';
 import BookingForm from './component/bookingForm/BookingForm';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import BookingPage from './component/bookingPage/BookingPage';
 
 
 function HomePage() {
@@ -35,7 +36,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<HomePage />}></Route>
-        <Route path='/reservations' element={<BookingForm />}></Route>
+        <Route path='/reservations' element={<BookingPage />}></Route>
       </Routes>
     </BrowserRouter>
   );
