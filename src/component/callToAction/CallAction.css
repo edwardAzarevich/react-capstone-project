@@ -1,0 +1,54 @@
+h1 .CallToActionCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 350px;
+}
+
+.CallToActionMain {
+    margin: 10px 0px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+@media (max-width: 899px) {
+    .CallToActionMain {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .CallToActionCard {
+        width: 90%;
+        max-width: 350px;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 479px) {
+    .CallToActionCard {
+        width: 95%;
+    }
+
+    .CallToActionCard h1 {
+        font-size: 1.8em;
+    }
+
+    .CallToActionCard h3 {
+        font-size: 1.2em;
+    }
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
