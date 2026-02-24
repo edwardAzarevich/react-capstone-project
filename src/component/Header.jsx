@@ -1,15 +1,11 @@
-import img from '../assets/Vector.svg';
+import img from "../assets/Vector.svg";
+import './Header.css'
 
 const Header = () => {
     return (
         <header className="Header" role="banner">
-
             <div className="logo-container">
-                <img
-                    src={img}
-                    alt="Little Lemon Logo"
-                    className="logo"
-                />
+                <img src={img} alt="Little Lemon Logo" className="logo" />
             </div>
 
             <nav className="Nav" aria-label="Main navigation">
