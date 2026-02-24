@@ -15,9 +15,9 @@ function HomePage() {
       <header>
         <Header />
       </header>
-      {/* <div className='info-background'>
+      <div className='info-background'>
         <CallToActionMain />
-      </div> */}
+      </div>
       <div>
         <Special />
       </div>
