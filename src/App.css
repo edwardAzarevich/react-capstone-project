@@ -53,27 +53,10 @@ body {
 }
 
 .info-background {
-    display: flex;
-    justify-content: center;
-    background-color: #495E57;
-    width: 100%;
-}
-
-h1 
-
-.CallToActionCard {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 350px;
-}
-.CallToActionMain {
-    margin: 10px 0px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: #495E57;
+  width: 100%;
 }
 
 @keyframes App-logo-spin {

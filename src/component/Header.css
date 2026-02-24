@@ -1,0 +1,54 @@
+@media (max-width: 768px) {
+    .Header {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .logo-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .Nav {
+        width: 100%;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        padding: 6px 0;
+        margin: 0;
+        box-shadow: none;
+        background: transparent;
+        position: static;
+    }
+
+    .Nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        width: auto;
+    }
+
+    .Nav a {
+        display: inline-block;
+        text-align: center;
+        padding: 8px 12px;
+    }
+
+    .burger {
+        display: none;
+    }
+}
