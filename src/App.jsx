@@ -35,7 +35,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<HomePage />}></Route>
-        <Route path='/bookingPage' element={<BookingForm />}></Route>
+        <Route path='/reservations' element={<BookingForm />}></Route>
       </Routes>
     </BrowserRouter>
   );
