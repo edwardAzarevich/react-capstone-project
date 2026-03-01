@@ -34,7 +34,7 @@ const Special = () => {
         <section className="special-section">
             <div className="special-header">
                 <h1 className="special-title">This week's specials!</h1>
-                <a href="/bookingPage" style={{ textDecoration: 'none' }}>
+                <a href="/reservations" style={{ textDecoration: 'none' }}>
                     <button className="special-button">Reserve a Table</button>
                 </a>
             </div>

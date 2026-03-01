@@ -14,15 +14,7 @@ body {
   color: white;
 }
 
-.Header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  justify-items: center;
-  gap: 220px;
-  margin: 15px 0px 50px 0px;
-}
+
 
 .Nav {
   display: flex;
