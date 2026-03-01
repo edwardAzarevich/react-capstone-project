@@ -1,5 +1,5 @@
-import { Formik, Field, Form, ErrorMessage } from "formik";
 import "./bookingForm.css";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useState, useEffect } from 'react';
 import { fetchAPI, submitAPI } from '../../api/api';
 import ConfirmedBooking from './ConfirmedBooking';
@@ -11,6 +11,7 @@ const BookingForm = () => {
         resTime: "",
         guests: 1,
         occasion: "",
+        privacyPolicy: false
     };
 
     const [availableTimes, setAvailableTimes] = useState([]);
@@ -174,6 +175,19 @@ const BookingForm = () => {
                                 <option value="Anniversary">Anniversary</option>
                             </Field>
                             <ErrorMessage name="occasion" component="div" className="error-message" />
+
+                            <div className="form-group">
+                                <Field
+                                    type="checkbox"
+                                    id="privacy-policy"
+                                    name="privacyPolicy"
+                                    className="form-checkbox"
+                                />
+                                <label htmlFor="privacy-policy" className="checkbox-label">
+                                    You agree to our friendly <a href="/privacy-policy" className="privacy-link" target="_blank" rel="noopener noreferrer">privacy policy</a>
+                                </label>
+                                <ErrorMessage name="privacyPolicy" component="div" className="error-message" />
+                            </div>
 
                             <button
                                 type="submit"
