@@ -143,14 +143,16 @@ describe('BookingForm', () => {
         const timeSelect = screen.getByLabelText(/choose time/i);
         const guestsInput = screen.getByLabelText(/number of guests/i);
         const occasionSelect = screen.getByLabelText(/occasion/i);
+        const privacyCheckbox = screen.getByLabelText(/friendly privacy policy/i);
         const submitButton = screen.getByRole('button', { name: /on Click/i });
+
 
         await user.type(dateInput, '2026-02-15');
         await user.selectOptions(timeSelect, '17:00');
         await user.clear(guestsInput);
         await user.type(guestsInput, '4');
         await user.selectOptions(occasionSelect, 'Birthday');
-
+        await user.click(privacyCheckbox);
         await user.click(submitButton);
 
         await waitFor(() => {
@@ -158,7 +160,8 @@ describe('BookingForm', () => {
                 resDate: '2026-02-15',
                 resTime: '17:00',
                 guests: 4,
-                occasion: 'Birthday'
+                occasion: 'Birthday',
+                privacyPolicy: true
             });
         });
     });
