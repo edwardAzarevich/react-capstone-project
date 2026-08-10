@@ -1,24 +1,25 @@
 import { validateBookingForm } from "../utils/validation";
-import { vi } from "vitest";
-const jest = vi;
+import { vi, describe, test, expect, type Mock } from "vitest";
+import type { BookingFormValues } from "../component/bookingForm/BookingForm";
 
 describe("validateBookingForm", () => {
-  const getDateString = (daysOffset = 0) => {
+  const getDateString = (daysOffset = 0): string => {
     const date = new Date();
     date.setDate(date.getDate() + daysOffset);
     return date.toISOString().split("T")[0];
   };
 
-  const getValidValues = () => ({
+  const getValidValues = (): BookingFormValues => ({
     resDate: getDateString(1),
     resTime: "18:00",
     guests: 4,
     occasion: "Birthday",
+    privacyPolicy: true,
   });
 
   describe("Date validation", () => {
     test("should return error if resDate is empty", () => {
-      const values = { ...getValidValues(), resDate: "" };
+      const values = { ...getValidValues(), resDate: "" } as any;
       const errors = validateBookingForm(values);
 
       expect(errors.resDate).toBe("Please select a date");
@@ -58,7 +59,8 @@ describe("validateBookingForm", () => {
     });
 
     test("should return error if time slot is already booked", () => {
-      const mockIsSlotAvailable = jest.fn().mockReturnValue(false);
+      const mockIsSlotAvailable: Mock<(date: string, time: string) => boolean> =
+        vi.fn().mockReturnValue(false);
       const values = getValidValues();
 
       const errors = validateBookingForm(values, mockIsSlotAvailable);
@@ -73,7 +75,8 @@ describe("validateBookingForm", () => {
     });
 
     test("should NOT return error if time slot is available", () => {
-      const mockIsSlotAvailable = jest.fn().mockReturnValue(true);
+      const mockIsSlotAvailable: Mock<(date: string, time: string) => boolean> =
+        vi.fn().mockReturnValue(true);
       const values = getValidValues();
 
       const errors = validateBookingForm(values, mockIsSlotAvailable);
@@ -93,8 +96,12 @@ describe("validateBookingForm", () => {
     });
 
     test("should not check availability if resDate is empty", () => {
-      const mockIsSlotAvailable = jest.fn();
-      const values = { ...getValidValues(), resDate: "", resTime: "18:00" };
+      const mockIsSlotAvailable = vi.fn();
+      const values = {
+        ...getValidValues(),
+        resDate: "",
+        resTime: "18:00",
+      } as any;
 
       const errors = validateBookingForm(values, mockIsSlotAvailable);
 
@@ -105,7 +112,7 @@ describe("validateBookingForm", () => {
 
   describe("Guests validation", () => {
     test("should return error if guests is empty", () => {
-      const values = { ...getValidValues(), guests: "" };
+      const values = { ...getValidValues(), guests: "" } as any;
       const errors = validateBookingForm(values);
 
       expect(errors.guests).toBe("Please specify the number of guests");
@@ -126,7 +133,7 @@ describe("validateBookingForm", () => {
     });
 
     test("should NOT return error if guests is between 1 and 10", () => {
-      const testValues = [1, 5, 10];
+      const testValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
       testValues.forEach((guests) => {
         const values = { ...getValidValues(), guests };
@@ -169,7 +176,7 @@ describe("validateBookingForm", () => {
         resTime: "",
         guests: 0,
         occasion: "",
-      };
+      } as any;
 
       const errors = validateBookingForm(values);
 
@@ -193,7 +200,7 @@ describe("validateBookingForm", () => {
         resTime: "",
         guests: 4,
         occasion: "",
-      };
+      } as any;
 
       const errors = validateBookingForm(values);
 
@@ -211,7 +218,7 @@ describe("validateBookingForm", () => {
         resTime: undefined,
         guests: undefined,
         occasion: undefined,
-      };
+      } as any;
 
       const errors = validateBookingForm(values);
 
@@ -229,7 +236,7 @@ describe("validateBookingForm", () => {
         resTime: null,
         guests: null,
         occasion: null,
-      };
+      } as any;
 
       const errors = validateBookingForm(values);
 
