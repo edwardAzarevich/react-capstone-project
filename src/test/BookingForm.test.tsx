@@ -2,28 +2,52 @@ import { render, screen, waitFor } from "@testing-library/react";
 import BookingForm from "../component/bookingForm/BookingForm";
 import userEvent from "@testing-library/user-event";
 import { validateBookingForm } from "../utils/validation";
-import { vi } from "vitest";
+import {
+  vi,
+  describe,
+  test,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+  Mock,
+} from "vitest";
 
-const jest = vi;
+declare global {
+  interface Window {
+    fetchAPI: Mock<(date: Date) => string[] | undefined>;
+    submitAPI: Mock<(values: any) => boolean>;
+  }
+}
 
-jest.mock("../utils/validation", () => ({
-  validateBookingForm: jest.fn(),
+vi.mock("../utils/validation", () => ({
+  validateBookingForm: vi.fn(),
 }));
 
+const mockValidateBookingForm = validateBookingForm as Mock<
+  typeof validateBookingForm
+>;
+
 beforeAll(() => {
-  window.fetchAPI = jest.fn();
-  window.submitAPI = jest.fn();
+  window.fetchAPI = vi.fn();
+  window.submitAPI = vi.fn();
 });
 
 describe("BookingForm localStorage", () => {
-  let mockLocalStorage;
+  let mockLocalStorage: {
+    getItem: Mock<(key: string) => string | null>;
+    setItem: Mock<(key: string, value: string) => void>;
+    removeItem: Mock<(key: string) => void>;
+    clear: Mock<() => void>;
+  };
 
   beforeEach(() => {
     mockLocalStorage = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn(),
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
     };
 
     Object.defineProperty(window, "localStorage", {
@@ -34,11 +58,11 @@ describe("BookingForm localStorage", () => {
     window.fetchAPI.mockReturnValue(["17:00", "17:30", "20:30", "22:30"]);
     window.submitAPI.mockReturnValue(true);
 
-    validateBookingForm.mockReturnValue({});
+    mockValidateBookingForm.mockReturnValue({});
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("loads booked slots from localStorage on mount", async () => {
@@ -89,7 +113,7 @@ describe("BookingForm localStorage", () => {
     });
   });
 
-  test("filters out booked slots from available times", async () => {
+  test("returns valid values on filter mock data", async () => {
     mockLocalStorage.getItem.mockReturnValue(
       JSON.stringify({
         "2026-02-15-17:00": { resDate: "2026-02-15", resTime: "17:00" },
@@ -103,6 +127,7 @@ describe("BookingForm localStorage", () => {
 
     await waitFor(() => {
       const timeSelect = screen.getByLabelText(/choose time/i);
+      expect(timeSelect).toBeInTheDocument();
       expect(screen.getByText("17:30")).toBeInTheDocument();
       expect(screen.queryByText("17:00")).not.toBeInTheDocument();
     });
@@ -116,7 +141,7 @@ test("Renders the BookingForm heading", () => {
 });
 
 describe("BookingForm", () => {
-  const mockConsoleLog = jest.spyOn(console, "log").mockImplementation();
+  const mockConsoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
 
   const renderComponent = () => {
     return render(<BookingForm />);
@@ -124,7 +149,7 @@ describe("BookingForm", () => {
 
   beforeEach(() => {
     mockConsoleLog.mockClear();
-    validateBookingForm.mockReturnValue({});
+    mockValidateBookingForm.mockReturnValue({});
   });
 
   afterAll(() => {
@@ -144,6 +169,10 @@ describe("BookingForm", () => {
   });
 
   test("submits form with correct values", async () => {
+    vi.spyOn(window.localStorage, "getItem").mockReturnValue(
+      JSON.stringify({}),
+    );
+
     const user = userEvent.setup();
     renderComponent();
 
@@ -155,11 +184,22 @@ describe("BookingForm", () => {
     const submitButton = screen.getByRole("button", { name: /on Click/i });
 
     await user.type(dateInput, "2026-02-15");
+
+    await waitFor(() => {
+      const option = screen.queryByText("17:00");
+      expect(option).not.toBeNull();
+    });
+
     await user.selectOptions(timeSelect, "17:00");
     await user.clear(guestsInput);
     await user.type(guestsInput, "4");
     await user.selectOptions(occasionSelect, "Birthday");
     await user.click(privacyCheckbox);
+
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
+    });
+
     await user.click(submitButton);
 
     await waitFor(() => {
@@ -177,7 +217,7 @@ describe("BookingForm", () => {
     const user = userEvent.setup();
     render(<BookingForm />);
 
-    validateBookingForm.mockReturnValue({
+    mockValidateBookingForm.mockReturnValue({
       resDate: "The date cannot be in the past",
     });
 
