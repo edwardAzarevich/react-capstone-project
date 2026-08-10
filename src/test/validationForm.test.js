@@ -1,236 +1,251 @@
-import { validateBookingForm } from '../utils/validation';
+import { validateBookingForm } from "../utils/validation";
+import { vi } from "vitest";
+const jest = vi;
 
-describe('validateBookingForm', () => {
-    const getDateString = (daysOffset = 0) => {
-        const date = new Date();
-        date.setDate(date.getDate() + daysOffset);
-        return date.toISOString().split('T')[0];
-    };
+describe("validateBookingForm", () => {
+  const getDateString = (daysOffset = 0) => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysOffset);
+    return date.toISOString().split("T")[0];
+  };
 
-    const getValidValues = () => ({
+  const getValidValues = () => ({
+    resDate: getDateString(1),
+    resTime: "18:00",
+    guests: 4,
+    occasion: "Birthday",
+  });
+
+  describe("Date validation", () => {
+    test("should return error if resDate is empty", () => {
+      const values = { ...getValidValues(), resDate: "" };
+      const errors = validateBookingForm(values);
+
+      expect(errors.resDate).toBe("Please select a date");
+    });
+
+    test("should return error if resDate is in the past", () => {
+      const pastDate = getDateString(-1);
+      const values = { ...getValidValues(), resDate: pastDate };
+      const errors = validateBookingForm(values);
+
+      expect(errors.resDate).toBe("The date cannot be in the past");
+    });
+
+    test("should NOT return error for today's date", () => {
+      const today = getDateString(0);
+      const values = { ...getValidValues(), resDate: today };
+      const errors = validateBookingForm(values);
+
+      expect(errors.resDate).toBeUndefined();
+    });
+
+    test("should NOT return error for future date", () => {
+      const futureDate = getDateString(1);
+      const values = { ...getValidValues(), resDate: futureDate };
+      const errors = validateBookingForm(values);
+
+      expect(errors.resDate).toBeUndefined();
+    });
+  });
+
+  describe("Time validation", () => {
+    test("should return error if resTime is empty", () => {
+      const values = { ...getValidValues(), resTime: "" };
+      const errors = validateBookingForm(values);
+
+      expect(errors.resTime).toBe("Please select a time.");
+    });
+
+    test("should return error if time slot is already booked", () => {
+      const mockIsSlotAvailable = jest.fn().mockReturnValue(false);
+      const values = getValidValues();
+
+      const errors = validateBookingForm(values, mockIsSlotAvailable);
+
+      expect(errors.resTime).toBe(
+        "This time has already been booked. Please choose a different time",
+      );
+      expect(mockIsSlotAvailable).toHaveBeenCalledWith(
+        values.resDate,
+        values.resTime,
+      );
+    });
+
+    test("should NOT return error if time slot is available", () => {
+      const mockIsSlotAvailable = jest.fn().mockReturnValue(true);
+      const values = getValidValues();
+
+      const errors = validateBookingForm(values, mockIsSlotAvailable);
+
+      expect(errors.resTime).toBeUndefined();
+      expect(mockIsSlotAvailable).toHaveBeenCalledWith(
+        values.resDate,
+        values.resTime,
+      );
+    });
+
+    test("should not check availability if isSlotAvailable function is not provided", () => {
+      const values = getValidValues();
+      const errors = validateBookingForm(values);
+
+      expect(errors.resTime).toBeUndefined();
+    });
+
+    test("should not check availability if resDate is empty", () => {
+      const mockIsSlotAvailable = jest.fn();
+      const values = { ...getValidValues(), resDate: "", resTime: "18:00" };
+
+      const errors = validateBookingForm(values, mockIsSlotAvailable);
+
+      expect(errors.resDate).toBe("Please select a date");
+      expect(mockIsSlotAvailable).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("Guests validation", () => {
+    test("should return error if guests is empty", () => {
+      const values = { ...getValidValues(), guests: "" };
+      const errors = validateBookingForm(values);
+
+      expect(errors.guests).toBe("Please specify the number of guests");
+    });
+
+    test("should return error if guests is less than 1", () => {
+      const values = { ...getValidValues(), guests: 0 };
+      const errors = validateBookingForm(values);
+
+      expect(errors.guests).toBe("Minimum of 1 guest");
+    });
+
+    test("should return error if guests is more than 10", () => {
+      const values = { ...getValidValues(), guests: 11 };
+      const errors = validateBookingForm(values);
+
+      expect(errors.guests).toBe("Maximum of 10 guests");
+    });
+
+    test("should NOT return error if guests is between 1 and 10", () => {
+      const testValues = [1, 5, 10];
+
+      testValues.forEach((guests) => {
+        const values = { ...getValidValues(), guests };
+        const errors = validateBookingForm(values);
+
+        expect(errors.guests).toBeUndefined();
+      });
+    });
+  });
+
+  describe("Occasion validation", () => {
+    test("should return error if occasion is empty", () => {
+      const values = { ...getValidValues(), occasion: "" };
+      const errors = validateBookingForm(values);
+
+      expect(errors.occasion).toBe("Please choose a reason");
+    });
+
+    test("should NOT return error if occasion is selected", () => {
+      const occasions = [
+        "Birthday",
+        "Anniversary",
+        "Wedding",
+        "Business Dinner",
+      ];
+
+      occasions.forEach((occasion) => {
+        const values = { ...getValidValues(), occasion };
+        const errors = validateBookingForm(values);
+
+        expect(errors.occasion).toBeUndefined();
+      });
+    });
+  });
+
+  describe("Multiple validation errors", () => {
+    test("should return multiple errors for invalid form", () => {
+      const values = {
+        resDate: "",
+        resTime: "",
+        guests: 0,
+        occasion: "",
+      };
+
+      const errors = validateBookingForm(values);
+
+      expect(errors).toEqual({
+        resDate: "Please select a date",
+        resTime: "Please select a time.",
+        guests: "Minimum of 1 guest",
+        occasion: "Please choose a reason",
+      });
+    });
+
+    test("should return empty object for valid form", () => {
+      const errors = validateBookingForm(getValidValues());
+
+      expect(errors).toEqual({});
+    });
+
+    test("should handle partial validation with some fields empty", () => {
+      const values = {
         resDate: getDateString(1),
-        resTime: '18:00',
+        resTime: "",
         guests: 4,
-        occasion: 'Birthday'
+        occasion: "",
+      };
+
+      const errors = validateBookingForm(values);
+
+      expect(errors).toEqual({
+        resTime: "Please select a time.",
+        occasion: "Please choose a reason",
+      });
+    });
+  });
+
+  describe("Edge cases", () => {
+    test("should handle undefined values", () => {
+      const values = {
+        resDate: undefined,
+        resTime: undefined,
+        guests: undefined,
+        occasion: undefined,
+      };
+
+      const errors = validateBookingForm(values);
+
+      expect(errors).toEqual({
+        resDate: "Please select a date",
+        resTime: "Please select a time.",
+        guests: "Please specify the number of guests",
+        occasion: "Please choose a reason",
+      });
     });
 
-    describe('Date validation', () => {
-        test('should return error if resDate is empty', () => {
-            const values = { ...getValidValues(), resDate: '' };
-            const errors = validateBookingForm(values);
+    test("should handle null values", () => {
+      const values = {
+        resDate: null,
+        resTime: null,
+        guests: null,
+        occasion: null,
+      };
 
-            expect(errors.resDate).toBe('Please select a date');
-        });
+      const errors = validateBookingForm(values);
 
-        test('should return error if resDate is in the past', () => {
-            const pastDate = getDateString(-1);
-            const values = { ...getValidValues(), resDate: pastDate };
-            const errors = validateBookingForm(values);
-
-            expect(errors.resDate).toBe('The date cannot be in the past');
-        });
-
-        test('should NOT return error for today\'s date', () => {
-            const today = getDateString(0);
-            const values = { ...getValidValues(), resDate: today };
-            const errors = validateBookingForm(values);
-
-            expect(errors.resDate).toBeUndefined();
-        });
-
-        test('should NOT return error for future date', () => {
-            const futureDate = getDateString(1);
-            const values = { ...getValidValues(), resDate: futureDate };
-            const errors = validateBookingForm(values);
-
-            expect(errors.resDate).toBeUndefined();
-        });
+      expect(errors).toEqual({
+        resDate: "Please select a date",
+        resTime: "Please select a time.",
+        guests: "Please specify the number of guests",
+        occasion: "Please choose a reason",
+      });
     });
 
-    describe('Time validation', () => {
-        test('should return error if resTime is empty', () => {
-            const values = { ...getValidValues(), resTime: '' };
-            const errors = validateBookingForm(values);
+    test("should handle negative guest count", () => {
+      const values = { ...getValidValues(), guests: -5 };
+      const errors = validateBookingForm(values);
 
-            expect(errors.resTime).toBe('Please select a time.');
-        });
-
-        test('should return error if time slot is already booked', () => {
-            const mockIsSlotAvailable = jest.fn().mockReturnValue(false);
-            const values = getValidValues();
-
-            const errors = validateBookingForm(values, mockIsSlotAvailable);
-
-            expect(errors.resTime).toBe('This time has already been booked. Please choose a different time');
-            expect(mockIsSlotAvailable).toHaveBeenCalledWith(values.resDate, values.resTime);
-        });
-
-        test('should NOT return error if time slot is available', () => {
-            const mockIsSlotAvailable = jest.fn().mockReturnValue(true);
-            const values = getValidValues();
-
-            const errors = validateBookingForm(values, mockIsSlotAvailable);
-
-            expect(errors.resTime).toBeUndefined();
-            expect(mockIsSlotAvailable).toHaveBeenCalledWith(values.resDate, values.resTime);
-        });
-
-        test('should not check availability if isSlotAvailable function is not provided', () => {
-            const values = getValidValues();
-            const errors = validateBookingForm(values);
-
-            expect(errors.resTime).toBeUndefined();
-        });
-
-        test('should not check availability if resDate is empty', () => {
-            const mockIsSlotAvailable = jest.fn();
-            const values = { ...getValidValues(), resDate: '', resTime: '18:00' };
-
-            const errors = validateBookingForm(values, mockIsSlotAvailable);
-
-            expect(errors.resDate).toBe('Please select a date');
-            expect(mockIsSlotAvailable).not.toHaveBeenCalled();
-        });
+      expect(errors.guests).toBe("Minimum of 1 guest");
     });
-
-    describe('Guests validation', () => {
-        test('should return error if guests is empty', () => {
-            const values = { ...getValidValues(), guests: '' };
-            const errors = validateBookingForm(values);
-
-            expect(errors.guests).toBe('Please specify the number of guests');
-        });
-
-        test('should return error if guests is less than 1', () => {
-            const values = { ...getValidValues(), guests: 0 };
-            const errors = validateBookingForm(values);
-
-            expect(errors.guests).toBe('Minimum of 1 guest');
-        });
-
-        test('should return error if guests is more than 10', () => {
-            const values = { ...getValidValues(), guests: 11 };
-            const errors = validateBookingForm(values);
-
-            expect(errors.guests).toBe('Maximum of 10 guests');
-        });
-
-        test('should NOT return error if guests is between 1 and 10', () => {
-            const testValues = [1, 5, 10];
-
-            testValues.forEach(guests => {
-                const values = { ...getValidValues(), guests };
-                const errors = validateBookingForm(values);
-
-                expect(errors.guests).toBeUndefined();
-            });
-        });
-    });
-
-    describe('Occasion validation', () => {
-        test('should return error if occasion is empty', () => {
-            const values = { ...getValidValues(), occasion: '' };
-            const errors = validateBookingForm(values);
-
-            expect(errors.occasion).toBe('Please choose a reason');
-        });
-
-        test('should NOT return error if occasion is selected', () => {
-            const occasions = ['Birthday', 'Anniversary', 'Wedding', 'Business Dinner'];
-
-            occasions.forEach(occasion => {
-                const values = { ...getValidValues(), occasion };
-                const errors = validateBookingForm(values);
-
-                expect(errors.occasion).toBeUndefined();
-            });
-        });
-    });
-
-    describe('Multiple validation errors', () => {
-        test('should return multiple errors for invalid form', () => {
-            const values = {
-                resDate: '',
-                resTime: '',
-                guests: 0,
-                occasion: ''
-            };
-
-            const errors = validateBookingForm(values);
-
-            expect(errors).toEqual({
-                resDate: 'Please select a date',
-                resTime: 'Please select a time.',
-                guests: 'Minimum of 1 guest',
-                occasion: 'Please choose a reason'
-            });
-        });
-
-        test('should return empty object for valid form', () => {
-            const errors = validateBookingForm(getValidValues());
-
-            expect(errors).toEqual({});
-        });
-
-        test('should handle partial validation with some fields empty', () => {
-            const values = {
-                resDate: getDateString(1),
-                resTime: '',
-                guests: 4,
-                occasion: ''
-            };
-
-            const errors = validateBookingForm(values);
-
-            expect(errors).toEqual({
-                resTime: 'Please select a time.',
-                occasion: 'Please choose a reason'
-            });
-        });
-    });
-
-    describe('Edge cases', () => {
-        test('should handle undefined values', () => {
-            const values = {
-                resDate: undefined,
-                resTime: undefined,
-                guests: undefined,
-                occasion: undefined
-            };
-
-            const errors = validateBookingForm(values);
-
-            expect(errors).toEqual({
-                resDate: 'Please select a date',
-                resTime: 'Please select a time.',
-                guests: 'Please specify the number of guests',
-                occasion: 'Please choose a reason'
-            });
-        });
-
-        test('should handle null values', () => {
-            const values = {
-                resDate: null,
-                resTime: null,
-                guests: null,
-                occasion: null
-            };
-
-            const errors = validateBookingForm(values);
-
-            expect(errors).toEqual({
-                resDate: 'Please select a date',
-                resTime: 'Please select a time.',
-                guests: 'Please specify the number of guests',
-                occasion: 'Please choose a reason'
-            });
-        });
-
-        test('should handle negative guest count', () => {
-            const values = { ...getValidValues(), guests: -5 };
-            const errors = validateBookingForm(values);
-
-            expect(errors.guests).toBe('Minimum of 1 guest');
-        });
-    });
+  });
 });
